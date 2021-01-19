@@ -118,15 +118,12 @@ public class RedBlackTree<E extends Comparable<E>> {
     }
 
     public void remove(E element) {
-        Node<E> node = _remove(element);
-        if (node != null && node.color == Node.Color.BLACK) {
-            this.removeFixUp(node);
-        }
+        _remove(element);
     }
 
-    private Node<E> _remove(E element) {
+    private void _remove(E element) {
         Node<E> deleting = this.find(element);
-        if (deleting == RedBlackTree.NIL) return null;
+        if (deleting == RedBlackTree.NIL) return;
 
         Node<E> target, replace;
         if (deleting.left == RedBlackTree.NIL || deleting.right == RedBlackTree.NIL)
@@ -134,16 +131,14 @@ public class RedBlackTree<E extends Comparable<E>> {
         else
             target = deleting.successor();
 
-        if (target.left != null)
+        if (target.left != RedBlackTree.NIL)
             replace = target.left;
         else
             replace = target.right;
 
-        if (replace != null) {
-            replace.parent = target.parent;
-        }
+        replace.parent = target.parent;
 
-        if (target.parent == null) this.root = deleting;
+        if (target.parent == null) this.root = replace;
         else if (target == target.parent.left) target.parent.left = replace;
         else target.parent.right = replace;
 
@@ -152,7 +147,9 @@ public class RedBlackTree<E extends Comparable<E>> {
             deleting.color = target.color;
         }
 
-        return target;
+        if (target.color == Node.Color.BLACK) {
+            this.removeFixUp(replace);
+        }
     }
 
     private void removeFixUp(Node<E> node) {
