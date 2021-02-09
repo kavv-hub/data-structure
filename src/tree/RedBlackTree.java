@@ -175,7 +175,7 @@ public class RedBlackTree<E extends Comparable<E>> {
                     if (sibling.right.color != Node.Color.RED) {
                         sibling.color = Node.Color.RED;
                         sibling.left.color = Node.Color.BLACK;
-                        this.rotateRight(sibling.parent);
+                        this.rotateRight(sibling);
                         sibling = node.parent.right;
                     }
 
@@ -203,7 +203,7 @@ public class RedBlackTree<E extends Comparable<E>> {
                     if (sibling.left.color != Node.Color.RED) {
                         sibling.color = Node.Color.RED;
                         sibling.left.color = Node.Color.BLACK;
-                        this.rotateLeft(sibling.parent);
+                        this.rotateLeft(sibling);
                         sibling = node.parent.right;
                     }
 
