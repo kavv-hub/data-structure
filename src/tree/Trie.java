@@ -10,11 +10,18 @@ public class Trie {
 
         private boolean isEndOfWord;
 
-        private int count;
-
         public TrieNode(boolean isEndOfWord) {
             this.isEndOfWord = isEndOfWord;
-            this.count = 0;
+        }
+
+        private boolean isEmpty() {
+            for (TrieNode child : children) {
+                if (child != null) {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 
@@ -38,29 +45,29 @@ public class Trie {
             node.children[code] = new TrieNode(false);
         }
 
-        ++node.children[code].count;
-
         _insert(node.children[code], c, i + 1);
     }
 
-    public boolean remove(String s) {
-        return _remove(root, s.toCharArray(), 0);
+    public void remove(String s) {
+        _remove(root, s.toCharArray(), 0);
     }
 
-    private boolean _remove(TrieNode node, char[] c, int i) {
-        if (node == null) return false;
-        if (i >= c.length) return node.isEndOfWord;
-
-        int code = c[i] - 'a';
-        if (_remove(node.children[code], c, i + 1)) {
-            if (i == c.length - 1) node.children[code].isEndOfWord = false;
-            if (--node.children[code].count == 0) {
-                node.children[code] = null;
-            }
-            return true;
+    private TrieNode _remove(TrieNode node, char[] c, int i) {
+        if (node == null) return null;
+        if (i >= c.length) {
+            if (!node.isEndOfWord) return node;
+            if (node.isEmpty()) return null;
+            node.isEndOfWord = false;
+            return node;
         }
 
-        return false;
+        int code = c[i] - 'a';
+        node.children[code] = _remove(node.children[code], c, i + 1);
+
+        if (!node.isEmpty() || node.isEndOfWord)
+            return node;
+        else
+            return null;
     }
 
     public boolean search(String word) {
